@@ -1,0 +1,3 @@
+dynamicSwitchContactAngleFvPatchScalarField.C
+
+LIB = $(FOAM_USER_LIBBIN)/libtwoPhaseProperties1
