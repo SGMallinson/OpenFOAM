@@ -1,0 +1,21 @@
+#!/bin/sh
+
+cd ${0%/*} || exit 1
+
+. $WM_PROJECT_DIR/bin/tools/RunFunctions
+
+rm -rf constant/polyMesh/sets
+
+runApplication blockMesh
+runApplication topoSet
+
+cp -r 0.org 0
+runApplication decomposePar
+runParallel $(getApplication)
+runApplication reconstructPar
+runApplication postProcess -func vorticity
+runApplication foamToVTK
+
+cd plots
+make clean
+make

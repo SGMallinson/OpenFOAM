@@ -1,0 +1,104 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  3.0.x                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+#include "parameters"
+
+application     pimpleFoam;
+
+startFoam       latestTime;
+
+startTime       0;
+
+stopAt          endTime;
+
+endTime         0.2;
+
+deltaT          5e-06;
+
+writeControl    adjustableRunTime;
+
+writeInterval   0.002;
+
+purgeWrite      0;
+
+writeFormat     ascii;
+
+writePrecision  10;
+
+writeCompression off;
+
+timeFormat      general;
+
+timePrecision   9;
+
+runTimeModifiable true;
+
+adjustTimeStep  no;//yes;
+
+maxCo           0.25;
+
+maxDeltaT       5.0e-5;
+
+libs ("libmomentumSource.so");
+
+functions
+{
+
+    averageQout
+    {
+        type            surfaceFieldValue;
+        libs            ("libfieldFunctionObjects.so");
+        fields          (U);
+        log             true;
+        writeControl    writeTime;
+        writeFields     no;
+        surfaceFormat   none;
+        regionType      patch;
+        name            outlet;
+        operation       areaIntegrate;
+    }
+
+    probes
+    {
+        type            probes;
+        functionObjectLibs ("libsampling.so");
+        enabled         true;
+        outputControl   timeStep;
+        outputInterval  1;
+
+        fields
+        (
+            p
+            U
+        );
+
+        probeLocations
+        (
+            ( $xp0 $yp0 $zp0 )
+            ( $xp1 $yp1 $zp1 )
+            ( $xp2 $yp2 $zp2 )
+        );
+
+    }
+}
+
+DebugSwitches
+{
+    liquidEvaporation   1;
+}
+
+// ************************************************************************* //
